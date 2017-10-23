@@ -448,9 +448,15 @@ add_filter("pmpro_confirmation_message", "pmproship_pmpro_confirmation_message",
 function pmproship_pmpro_email_body($body, $pmpro_email)
 {
 	global $wpdb;
- 
-	//get the user_id from the email
-	$user_id = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_email = '" . $pmpro_email->data['user_email'] . "' LIMIT 1");
+	
+	// BUG FIX: PHP Notice if user isn't logged in (yet)
+        $shipping_address = null;
+	
+	// BUG FIX: PHP Notice if user isn't logged in (yet)
+	if ( isset( $pmpro_email->data['user_email'] ) ) {
+		//get the user_id from the email
+		$user_id = $wpdb->get_var("SELECT ID FROM $wpdb->users WHERE user_email = '" . $pmpro_email->data['user_email'] . "' LIMIT 1");
+	}
 	
 	if(!empty($user_id))
 	{
